@@ -91,7 +91,6 @@ if app_mode == "子宮內膜癌 (Endometrial)":
         p53_abn = st.checkbox('p53 abnormal')
 
     if st.button("計算分期"):
-        # Logic implementation
         T_stage = 'T1a' if myometrial_invasion in ['無侵犯', '<50%'] else 'T1b'
         N_stage = 'N0'
         M_stage = 'M0'
@@ -515,8 +514,9 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         "contents": [{"parts": contents_parts}]
                     }
 
-                    # 3. 直接呼叫 API (繞過 google-generative-ai 套件)
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+                    # 3. 直接呼叫 API (修正模型名稱)
+                    # 這裡使用 gemini-1.5-flash-latest 以確保 API 路由正確
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
                     headers = {'Content-Type': 'application/json'}
                     
                     response = requests.post(url, headers=headers, data=json.dumps(payload))
@@ -533,8 +533,10 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                             st.error("無法解析 AI 回傳的資料，可能內容被阻擋或格式錯誤。")
                             st.json(result)
                     else:
-                        st.error(f"API 呼叫失敗: {response.status_code}")
-                        st.text(response.text)
+                        st.error(f"API 呼叫失敗 (Status Code: {response.status_code})")
+                        st.text("錯誤訊息如下：")
+                        st.json(response.json())
+                        st.info("💡 建議：請確認 API Key 是否正確，或該 Key 是否有權限存取 Gemini API。")
 
                 except Exception as e:
                     st.error(f"發生錯誤：{str(e)}")
