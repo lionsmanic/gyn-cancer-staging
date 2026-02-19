@@ -52,9 +52,9 @@ with st.sidebar:
     st.subheader("🤖 AI 設定")
     api_key = st.text_input("輸入 Gemini API Key", type="password", help="請輸入 Google Gemini API Key 以啟用 AI 判讀功能")
     
-    # --- 新增：API Key 測試與模型列表功能 ---
+    # 測試按鈕 (保留供除錯用)
     if api_key:
-        if st.button("🔍 測試 API Key 並列出可用模型"):
+        if st.button("🔍 測試 API Key"):
             try:
                 test_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
                 test_res = requests.get(test_url)
@@ -62,10 +62,9 @@ with st.sidebar:
                     models = test_res.json().get('models', [])
                     model_names = [m['name'].replace('models/', '') for m in models if 'gemini' in m['name']]
                     st.success("✅ API Key 有效！")
-                    st.write("您的 Key 支援以下模型：")
-                    st.code(model_names)
+                    st.json(model_names) # 顯示支援的模型清單
                 else:
-                    st.error(f"❌ API Key 無效或是權限不足 (Code: {test_res.status_code})")
+                    st.error(f"❌ API Key 無效 (Code: {test_res.status_code})")
             except Exception as e:
                 st.error(f"連線錯誤: {e}")
 
@@ -532,8 +531,9 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         "contents": [{"parts": contents_parts}]
                     }
 
-                    # 3. 直接呼叫 API (修正為最標準的 gemini-1.5-flash)
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+                    # 3. 直接呼叫 API (更新為 gemini-2.5-flash)
+                    # 您的 API Key 權限非常高，可以使用最新的 2.5 版！
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
                     headers = {'Content-Type': 'application/json'}
                     
                     response = requests.post(url, headers=headers, data=json.dumps(payload))
@@ -544,7 +544,7 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         try:
                             # 解析 Gemini 的 JSON 結構
                             answer = result['candidates'][0]['content']['parts'][0]['text']
-                            st.markdown("### 📋 AI 分析結果")
+                            st.markdown("### 📋 AI 分析結果 (Model: Gemini 2.5 Flash)")
                             st.markdown(answer)
                         except KeyError:
                             st.error("無法解析 AI 回傳的資料，可能內容被阻擋或格式錯誤。")
@@ -553,7 +553,7 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         st.error(f"API 呼叫失敗 (Status Code: {response.status_code})")
                         st.text("錯誤訊息如下：")
                         st.json(response.json())
-                        st.info("💡 建議：請確認 API Key 是否正確，或嘗試點擊側邊欄的「測試 API Key」按鈕來檢查。")
+                        st.info("💡 建議：請確認 API Key 是否正確。")
 
                 except Exception as e:
                     st.error(f"發生錯誤：{str(e)}")
