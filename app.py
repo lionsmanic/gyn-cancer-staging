@@ -51,6 +51,24 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("🤖 AI 設定")
     api_key = st.text_input("輸入 Gemini API Key", type="password", help="請輸入 Google Gemini API Key 以啟用 AI 判讀功能")
+    
+    # --- 新增：API Key 測試與模型列表功能 ---
+    if api_key:
+        if st.button("🔍 測試 API Key 並列出可用模型"):
+            try:
+                test_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+                test_res = requests.get(test_url)
+                if test_res.status_code == 200:
+                    models = test_res.json().get('models', [])
+                    model_names = [m['name'].replace('models/', '') for m in models if 'gemini' in m['name']]
+                    st.success("✅ API Key 有效！")
+                    st.write("您的 Key 支援以下模型：")
+                    st.code(model_names)
+                else:
+                    st.error(f"❌ API Key 無效或是權限不足 (Code: {test_res.status_code})")
+            except Exception as e:
+                st.error(f"連線錯誤: {e}")
+
     st.info("資料來源：根據 FIGO 與 AJCC TNM 系統整合。")
 
 # --- 1. 子宮內膜癌 ---
@@ -514,9 +532,8 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         "contents": [{"parts": contents_parts}]
                     }
 
-                    # 3. 直接呼叫 API (修正模型名稱)
-                    # 這裡使用 gemini-1.5-flash-latest 以確保 API 路由正確
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
+                    # 3. 直接呼叫 API (修正為最標準的 gemini-1.5-flash)
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
                     headers = {'Content-Type': 'application/json'}
                     
                     response = requests.post(url, headers=headers, data=json.dumps(payload))
@@ -536,7 +553,7 @@ elif app_mode == "🤖 AI 智慧判讀 (Beta)":
                         st.error(f"API 呼叫失敗 (Status Code: {response.status_code})")
                         st.text("錯誤訊息如下：")
                         st.json(response.json())
-                        st.info("💡 建議：請確認 API Key 是否正確，或該 Key 是否有權限存取 Gemini API。")
+                        st.info("💡 建議：請確認 API Key 是否正確，或嘗試點擊側邊欄的「測試 API Key」按鈕來檢查。")
 
                 except Exception as e:
                     st.error(f"發生錯誤：{str(e)}")
