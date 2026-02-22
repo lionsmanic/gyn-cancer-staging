@@ -2,916 +2,975 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>婦癌臨床分期輔助系統</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
-  :root {
-    --teal: #0d7377;
-    --teal-light: #14a085;
-    --teal-dark: #0a5568;
-    --accent: #f0a500;
-    --bg: #f4f7f9;
-    --card: #ffffff;
-    --text: #1a2633;
-    --text-muted: #5a6a7a;
-    --border: #dde3ea;
-    --success: #1a9e6e;
-    --warning: #d97706;
-    --danger: #c0392b;
-    --radius: 12px;
-    --shadow: 0 4px 24px rgba(13,115,119,0.10);
-  }
+:root {
+  --teal: #0d7377;
+  --teal-light: #14a085;
+  --teal-dark: #0a5568;
+  --teal-pale: #e4f4f4;
+  --accent: #f0a500;
+  --bg: #f0f4f7;
+  --card: #ffffff;
+  --text: #1a2633;
+  --text-muted: #5a6a7a;
+  --border: #dde3ea;
+  --success-bg: #e6f9f2;
+  --success-border: #6fcfa8;
+  --success-text: #0f6b4a;
+  --info-bg: #eaf3ff;
+  --info-border: #90b8ef;
+  --info-text: #1a4a8a;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 16px rgba(13,115,119,0.10);
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Noto Sans TC', 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+html { scroll-behavior: smooth; }
 
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, var(--teal-light) 100%);
-    color: #fff;
-    padding: 22px 32px 18px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    box-shadow: 0 2px 16px rgba(10,85,104,0.18);
-  }
-  header .logo { font-size: 2rem; }
-  header h1 { font-size: 1.45rem; font-weight: 700; letter-spacing: 0.5px; }
-  header p { font-size: 0.82rem; opacity: 0.82; margin-top: 2px; font-weight: 300; }
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
 
-  /* LAYOUT */
-  .layout { display: flex; min-height: calc(100vh - 72px); }
+/* ── HEADER ── */
+header {
+  background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 55%, var(--teal-light) 100%);
+  color: #fff;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(10,85,104,0.22);
+}
+header .logo { font-size: 1.8rem; flex-shrink: 0; }
+header h1 { font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
+header p { font-size: 0.72rem; opacity: 0.8; margin-top: 2px; font-weight: 300; }
 
-  /* SIDEBAR */
-  nav {
-    width: 220px;
-    background: #fff;
-    border-right: 1px solid var(--border);
-    padding: 20px 0;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  nav .nav-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    padding: 8px 20px 4px;
-    text-transform: uppercase;
-  }
-  nav button {
-    background: none;
-    border: none;
-    text-align: left;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 0.86rem;
-    color: var(--text-muted);
-    font-family: inherit;
-    border-left: 3px solid transparent;
-    transition: all 0.18s;
-    line-height: 1.4;
-  }
-  nav button:hover { background: #f0f5f5; color: var(--teal); }
-  nav button.active {
-    background: #e8f5f5;
-    color: var(--teal-dark);
-    font-weight: 600;
-    border-left-color: var(--teal);
-  }
-  nav .nav-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  z-index: 200;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+.bottom-nav-scroll {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.bottom-nav-scroll::-webkit-scrollbar { display: none; }
+.bottom-nav-scroll button {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.7rem;
+  font-family: inherit;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-top: 2.5px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.bottom-nav-scroll button .nav-icon { font-size: 1.1rem; }
+.bottom-nav-scroll button.active {
+  color: var(--teal);
+  border-top-color: var(--teal);
+  font-weight: 600;
+}
 
-  /* MAIN CONTENT */
+/* ── DESKTOP SIDEBAR ── */
+.layout { display: flex; }
+aside {
+  width: 210px;
+  background: #fff;
+  border-right: 1px solid var(--border);
+  padding: 18px 0;
+  flex-shrink: 0;
+  position: sticky;
+  top: 62px;
+  height: calc(100vh - 62px);
+  overflow-y: auto;
+}
+aside .nav-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  padding: 10px 18px 4px;
+  text-transform: uppercase;
+}
+aside button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 9px 18px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+aside button:hover { background: #f0f8f8; color: var(--teal); }
+aside button.active {
+  background: #e6f5f5;
+  color: var(--teal-dark);
+  font-weight: 600;
+  border-left-color: var(--teal);
+}
+aside .nav-divider { height: 1px; background: var(--border); margin: 8px 14px; }
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  padding: 24px 28px;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+  margin-bottom: 4px;
+}
+.page-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ── GRID ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 12px; }
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+select, input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #f8fafc;
+  color: var(--text);
+  transition: border 0.15s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235a6a7a' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+select:focus, input:focus { border-color: var(--teal); background: #fff; }
+
+/* ── RADIO / CHECKBOX ── */
+.radio-group, .check-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-item, .check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: #f8fafc;
+  transition: all 0.15s;
+}
+.radio-item:has(input:checked), .check-item:has(input:checked) {
+  background: var(--teal-pale);
+  border-color: var(--teal);
+}
+.radio-item input, .check-item input {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--teal);
+  width: 16px; height: 16px;
+  cursor: pointer;
+}
+
+/* ── BUTTON ── */
+.btn {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 14px rgba(13,115,119,0.28);
+}
+.btn:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(13,115,119,0.32); }
+.btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(13,115,119,0.2); }
+
+/* ── RESULT ── */
+.result-wrap { margin-top: 16px; }
+.result-box {
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.result-box.show { display: block; }
+.result-success { background: var(--success-bg); border: 1.5px solid var(--success-border); color: var(--success-text); }
+.result-info { background: var(--info-bg); border: 1.5px solid var(--info-border); color: var(--info-text); font-size: 0.88rem; font-weight: 400; }
+.result-warning { background: #fff8e1; border: 1.5px solid #f0c040; color: #7a5a00; font-size: 0.9rem; }
+
+/* ── AI PAGE ── */
+.api-warn {
+  background: #fff3cd;
+  border: 1.5px solid #f0c040;
+  border-radius: var(--radius-sm);
+  padding: 12px 15px;
+  font-size: 0.82rem;
+  color: #7a5a00;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.upload-area {
+  border: 2px dashed var(--teal);
+  border-radius: var(--radius);
+  background: #f0f9f9;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  touch-action: manipulation;
+}
+.upload-area:active { background: #d8f0f0; }
+.upload-area input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-area .upload-icon { font-size: 2.4rem; margin-bottom: 10px; }
+.upload-area p { color: var(--text-muted); font-size: 0.86rem; }
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+}
+.preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.preview-item .rm-btn {
+  position: absolute; top: 4px; right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: #fff; border: none; border-radius: 50%;
+  width: 22px; height: 22px; font-size: 0.72rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+.spinner {
+  display: none; text-align: center; padding: 28px 0; color: var(--teal); font-size: 0.88rem;
+}
+.spinner.show { display: block; }
+.spin-circle {
+  width: 40px; height: 40px;
+  border: 3px solid #c0e0e0; border-top-color: var(--teal);
+  border-radius: 50%; margin: 0 auto 14px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.ai-result-box {
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  margin-top: 16px; display: none; line-height: 1.75;
+}
+.ai-result-box.show { display: block; animation: fadeIn 0.3s ease; }
+.ai-result-box h2 { color: var(--teal-dark); font-size: 0.95rem; margin-bottom: 12px; }
+.ai-result-box h3 { color: var(--teal); font-size: 0.9rem; margin: 14px 0 6px; }
+.ai-result-box h4 { color: var(--teal-dark); font-size: 0.87rem; margin: 12px 0 5px; }
+.ai-result-box p { font-size: 0.86rem; margin-bottom: 7px; }
+.ai-result-box ul { padding-left: 18px; margin: 6px 0; }
+.ai-result-box li { font-size: 0.85rem; margin-bottom: 3px; }
+.ai-result-box table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.82rem; overflow-x: auto; display: block; }
+.ai-result-box th { background: #e8f5f5; color: var(--teal-dark); padding: 7px 10px; text-align: left; border: 1px solid var(--border); white-space: nowrap; }
+.ai-result-box td { padding: 6px 10px; border: 1px solid var(--border); }
+.ai-result-box tr:nth-child(even) td { background: #f8fafc; }
+.ai-result-box strong { color: var(--teal-dark); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  aside { display: none; }
+  .bottom-nav { display: block; }
   main {
-    flex: 1;
-    padding: 28px 36px;
-    overflow-y: auto;
+    padding: 16px 14px;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
   }
-
-  .page { display: none; }
-  .page.active { display: block; }
-
-  .page-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--teal-dark);
-    margin-bottom: 6px;
-  }
-  .page-sub {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    padding: 22px 24px;
-    margin-bottom: 18px;
-    box-shadow: var(--shadow);
-  }
-  .card h3 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--teal);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  /* FORM ELEMENTS */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .form-group { margin-bottom: 14px; }
-  label.field-label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.2px;
-  }
-  select, input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.88rem;
-    font-family: inherit;
-    background: #f8fafc;
-    color: var(--text);
-    transition: border 0.15s;
-    outline: none;
-  }
-  select:focus, input:focus { border-color: var(--teal); background: #fff; }
-
-  /* RADIO/CHECKBOX */
-  .radio-group, .check-group { display: flex; flex-direction: column; gap: 7px; }
-  .radio-item, .check-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    cursor: pointer;
-    font-size: 0.86rem;
-    line-height: 1.4;
-  }
-  .radio-item input, .check-item input { margin-top: 2px; accent-color: var(--teal); cursor: pointer; }
-
-  /* BUTTON */
-  .btn {
-    background: var(--teal);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s, transform 0.1s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn:hover { background: var(--teal-dark); transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
-  .btn-full { width: 100%; justify-content: center; }
-
-  /* RESULT BOX */
-  .result-box {
-    border-radius: var(--radius);
-    padding: 18px 22px;
-    margin-top: 18px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    display: none;
-    animation: fadeIn 0.3s ease;
-  }
-  .result-box.show { display: block; }
-  .result-success {
-    background: #e6f9f2;
-    border: 1.5px solid #6fcfa8;
-    color: #0f6b4a;
-  }
-  .result-info {
-    background: #eaf3ff;
-    border: 1.5px solid #90b8ef;
-    color: #1a4a8a;
-    font-size: 0.9rem;
-    font-weight: 400;
-    margin-top: 10px;
-    display: none;
-  }
-  .result-info.show { display: block; }
-
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
-
-  /* AI PAGE */
-  .api-note {
-    background: #fff8e1;
-    border: 1.5px solid #f0c040;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 0.83rem;
-    color: #7a5a00;
-    margin-bottom: 18px;
-  }
-  .upload-area {
-    border: 2px dashed var(--teal);
-    border-radius: var(--radius);
-    background: #f0f9f9;
-    padding: 36px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.15s;
-    position: relative;
-  }
-  .upload-area:hover { background: #e0f2f2; }
-  .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-  .upload-area .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
-  .upload-area p { color: var(--text-muted); font-size: 0.88rem; }
-
-  .preview-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 14px;
-  }
-  .preview-item {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 2px solid var(--border);
-  }
-  .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-  .preview-item .remove-btn {
-    position: absolute;
-    top: 3px; right: 3px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 20px; height: 20px;
-    font-size: 0.7rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* AI RESULT */
-  .ai-result {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-top: 18px;
-    display: none;
-    line-height: 1.7;
-  }
-  .ai-result.show { display: block; }
-  .ai-result h3 { color: var(--teal-dark); margin-bottom: 12px; font-size: 1rem; }
-  .ai-result p { font-size: 0.88rem; color: var(--text); margin-bottom: 8px; }
-  .ai-result table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.86rem; }
-  .ai-result th { background: #e8f5f5; color: var(--teal-dark); padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
-  .ai-result td { padding: 7px 12px; border: 1px solid var(--border); }
-  .ai-result tr:nth-child(even) td { background: #f8fafc; }
-
-  .spinner {
-    display: none;
-    text-align: center;
-    padding: 24px;
-    color: var(--teal);
-    font-size: 0.9rem;
-  }
-  .spinner.show { display: block; }
-  .spinner::before {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 36px;
-    border: 3px solid #c0e0e0;
-    border-top-color: var(--teal);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 12px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .settings-card {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    margin-bottom: 18px;
-  }
-  .settings-card label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 8px; }
-
-  /* RESPONSIVE */
-  @media (max-width: 720px) {
-    nav { display: none; }
-    main { padding: 16px; }
-    .form-grid { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.1rem; }
-  }
+  .two-col { grid-template-columns: 1fr; }
+  .page-title { font-size: 1.1rem; }
+  .btn { padding: 15px; font-size: 0.92rem; }
+}
+@media (min-width: 769px) {
+  header p { display: block; }
+}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="logo">⚕️</div>
   <div>
     <h1>婦癌臨床分期輔助系統</h1>
-    <p>Integrated Gynecologic Oncology Staging Tool &nbsp;·&nbsp; FIGO &amp; AJCC TNM</p>
+    <p>Gynecologic Oncology Staging · FIGO &amp; AJCC TNM</p>
   </div>
 </header>
 
+<!-- DESKTOP SIDEBAR -->
 <div class="layout">
-  <nav>
-    <div class="nav-label">分期判定</div>
-    <button class="active" onclick="showPage('endometrial', this)">📋 子宮內膜癌</button>
-    <button onclick="showPage('ovarian', this)">🔵 卵巢癌</button>
-    <button onclick="showPage('cervical', this)">🔴 子宮頸癌</button>
-    <button onclick="showPage('sarcoma', this)">🟠 子宮惡性肉瘤</button>
-    <button onclick="showPage('melanoma', this)">⚫ 外陰黑色素瘤</button>
-    <button onclick="showPage('vaginal', this)">🟣 陰道癌</button>
-    <button onclick="showPage('gtn', this)">🟡 GTN</button>
-    <button onclick="showPage('vulvar', this)">🟤 外陰癌</button>
-    <div class="nav-divider"></div>
-    <div class="nav-label">AI 輔助</div>
-    <button onclick="showPage('ai', this)">🤖 AI 智慧判讀</button>
-  </nav>
+<aside>
+  <div class="nav-label">分期判定</div>
+  <button class="active" onclick="showPage('endometrial',this)">📋 子宮內膜癌</button>
+  <button onclick="showPage('ovarian',this)">🔵 卵巢癌</button>
+  <button onclick="showPage('cervical',this)">🔴 子宮頸癌</button>
+  <button onclick="showPage('sarcoma',this)">🟠 子宮惡性肉瘤</button>
+  <button onclick="showPage('melanoma',this)">⚫ 外陰黑色素瘤</button>
+  <button onclick="showPage('vaginal',this)">🟣 陰道癌</button>
+  <button onclick="showPage('gtn',this)">🟡 GTN</button>
+  <button onclick="showPage('vulvar',this)">🟤 外陰癌</button>
+  <div class="nav-divider"></div>
+  <div class="nav-label">AI 輔助</div>
+  <button onclick="showPage('ai',this)">🤖 AI 智慧判讀</button>
+</aside>
 
-  <main>
+<!-- MAIN -->
+<main>
 
-    <!-- ===== 子宮內膜癌 ===== -->
-    <div class="page active" id="page-endometrial">
-      <div class="page-title">子宮內膜癌分期</div>
-      <div class="page-sub">Endometrial Cancer · FIGO 2023 &amp; AJCC TNM</div>
-      <div class="form-grid">
-        <div class="card">
-          <h3>🔬 病理特徵</h3>
-          <div class="form-group">
-            <label class="field-label">組織學型態</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="ec_histo" value="nonaggressive" checked> 非兇險 (non-aggressive): Low grade G1/G2 endometrioid</label>
-              <label class="radio-item"><input type="radio" name="ec_histo" value="aggressive"> 兇險 (aggressive): Serous, Clear cell, Undifferentiated, Carcinosarcoma, G3 endometrioid</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="field-label">子宮肌層侵犯深度</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="ec_myo" value="none" checked> 無侵犯</label>
-              <label class="radio-item"><input type="radio" name="ec_myo" value="lt50"> &lt;50%</label>
-              <label class="radio-item"><input type="radio" name="ec_myo" value="ge50"> ≥50%</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="field-label">血管或淋巴管侵犯 (LVSI)</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="ec_lvsi" value="none" checked> 無侵犯</label>
-              <label class="radio-item"><input type="radio" name="ec_lvsi" value="focal"> 輕微侵犯 (focal)</label>
-              <label class="radio-item"><input type="radio" name="ec_lvsi" value="extensive"> 大量侵犯 (extensive, ≥5 vessels)</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="field-label">淋巴結轉移大小</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="ec_ln" value="none" checked> 無</label>
-              <label class="radio-item"><input type="radio" name="ec_ln" value="micro"> 微轉移 (micrometastasis): 0.2–2 mm</label>
-              <label class="radio-item"><input type="radio" name="ec_ln" value="macro"> 巨轉移 (macrometastasis): &gt;2 mm</label>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h3>📍 侵犯範圍</h3>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" id="ec_cervical"> 宮頸間質侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_ovarian_tubal"> 卵巢或輸卵管侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_ovarian_limited"> 卵巢腫瘤單側侷限無破裂</label>
-            <label class="check-item"><input type="checkbox" id="ec_serosa"> 漿膜侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_vaginal"> 陰道或子宮旁侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_pelvic_peri"> 骨盆腹膜侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_upper_abd"> 骨盆以上腹腔腹膜侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_bladder"> 膀胱或腸黏膜侵犯</label>
-            <label class="check-item"><input type="checkbox" id="ec_distant"> 遠處轉移（含腹腔外淋巴結、肺、肝、腦、骨等）</label>
-          </div>
-          <h3 style="margin-top:16px;">🧬 淋巴結與分子特徵</h3>
-          <div class="check-group">
-            <label class="check-item"><input type="checkbox" id="ec_pelvic_ln"> 骨盆淋巴結轉移</label>
-            <label class="check-item"><input type="checkbox" id="ec_pa_ln"> 主動脈旁淋巴結轉移</label>
-            <label class="check-item"><input type="checkbox" id="ec_pole"> POLE mutation</label>
-            <label class="check-item"><input type="checkbox" id="ec_p53"> p53 abnormal</label>
-          </div>
-        </div>
+  <!-- ===== 子宮內膜癌 ===== -->
+  <div class="page active" id="page-endometrial">
+    <div class="page-title">子宮內膜癌分期</div>
+    <div class="page-sub">Endometrial Cancer · FIGO 2023</div>
+    <div class="card">
+      <div class="card-title">🔬 組織學型態</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="ec_histo" value="nonaggressive" checked> 非兇險 – Low grade G1/G2 endometrioid</label>
+        <label class="radio-item"><input type="radio" name="ec_histo" value="aggressive"> 兇險 – Serous, Clear cell, Undifferentiated, Carcinosarcoma, G3</label>
       </div>
-      <button class="btn btn-full" onclick="stageEndometrial()">⚡ 計算分期</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🩺 子宮肌層侵犯深度</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="ec_myo" value="none" checked> 無侵犯</label>
+        <label class="radio-item"><input type="radio" name="ec_myo" value="lt50"> &lt;50%</label>
+        <label class="radio-item"><input type="radio" name="ec_myo" value="ge50"> ≥50%</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🩸 LVSI 血管/淋巴管侵犯</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="ec_lvsi" value="none" checked> 無侵犯</label>
+        <label class="radio-item"><input type="radio" name="ec_lvsi" value="focal"> 輕微侵犯 (focal)</label>
+        <label class="radio-item"><input type="radio" name="ec_lvsi" value="extensive"> 大量侵犯 (extensive ≥5 vessels)</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 淋巴結轉移大小</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="ec_ln" value="none" checked> 無轉移</label>
+        <label class="radio-item"><input type="radio" name="ec_ln" value="micro"> 微轉移 (0.2–2 mm)</label>
+        <label class="radio-item"><input type="radio" name="ec_ln" value="macro"> 巨轉移 (&gt;2 mm)</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📍 侵犯範圍（可複選）</div>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" id="ec_cervical"> 宮頸間質侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_ovarian_tubal"> 卵巢或輸卵管侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_ovarian_limited"> 卵巢腫瘤單側侷限無破裂</label>
+        <label class="check-item"><input type="checkbox" id="ec_serosa"> 漿膜侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_vaginal"> 陰道或子宮旁侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_pelvic_peri"> 骨盆腹膜侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_upper_abd"> 骨盆以上腹腔腹膜侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_bladder"> 膀胱或腸黏膜侵犯</label>
+        <label class="check-item"><input type="checkbox" id="ec_distant"> 遠處轉移（腹腔外淋巴結/肺/肝/腦/骨）</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🧬 淋巴結 &amp; 分子特徵</div>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" id="ec_pelvic_ln"> 骨盆淋巴結轉移</label>
+        <label class="check-item"><input type="checkbox" id="ec_pa_ln"> 主動脈旁淋巴結轉移</label>
+        <label class="check-item"><input type="checkbox" id="ec_pole"> POLE mutation</label>
+        <label class="check-item"><input type="checkbox" id="ec_p53"> p53 abnormal</label>
+      </div>
+    </div>
+    <button class="btn" onclick="stageEndometrial()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="ec_result"></div>
       <div class="result-box result-info" id="ec_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== 卵巢癌 ===== -->
-    <div class="page" id="page-ovarian">
-      <div class="page-title">卵巢癌分期</div>
-      <div class="page-sub">Ovarian Cancer · FIGO 2014 &amp; AJCC TNM</div>
-      <div class="card">
-        <h3>🔷 T 原發腫瘤</h3>
-        <select id="ov_t">
-          <option value="T1a">T1a – 單側卵巢、輸卵管未破裂</option>
-          <option value="T1b">T1b – 雙側卵巢、輸卵管未破裂</option>
-          <option value="T1c1">T1c1 – 手術時腫瘤溢出</option>
-          <option value="T1c2">T1c2 – 術前破裂或腫瘤於卵巢/輸卵管表面</option>
-          <option value="T1c3">T1c3 – 腹水或腹膜沖洗細胞學陽性</option>
-          <option value="T2a">T2a – 子宮或輸卵管轉移</option>
-          <option value="T2b">T2b – 其他骨盆組織轉移</option>
-          <option value="T3a">T3a – 腹腔顯微轉移</option>
-          <option value="T3b">T3b – 腹腔轉移 ≤2 cm</option>
-          <option value="T3c">T3c – 腹腔轉移 &gt;2 cm</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 N 淋巴結</h3>
-        <select id="ov_n">
-          <option value="N0">N0 – 無淋巴結轉移</option>
-          <option value="N1a">N1a – 腹膜後淋巴結轉移 ≤10 mm</option>
-          <option value="N1b">N1b – 腹膜後淋巴結轉移 &gt;10 mm</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 M 遠端轉移</h3>
-        <select id="ov_m">
-          <option value="M0">M0 – 無遠端轉移</option>
-          <option value="M1a">M1a – 胸水細胞學陽性</option>
-          <option value="M1b">M1b – 肝脾實質或腹外器官轉移</option>
-        </select>
-      </div>
-      <button class="btn btn-full" onclick="stageOvarian()">⚡ 計算分期</button>
+  <!-- ===== 卵巢癌 ===== -->
+  <div class="page" id="page-ovarian">
+    <div class="page-title">卵巢癌分期</div>
+    <div class="page-sub">Ovarian Cancer · FIGO 2014</div>
+    <div class="card">
+      <div class="card-title">🔷 T – 原發腫瘤</div>
+      <select id="ov_t">
+        <option value="T1a">T1a – 單側卵巢/輸卵管，未破裂</option>
+        <option value="T1b">T1b – 雙側卵巢/輸卵管，未破裂</option>
+        <option value="T1c1">T1c1 – 手術時腫瘤溢出</option>
+        <option value="T1c2">T1c2 – 術前破裂或腫瘤表面</option>
+        <option value="T1c3">T1c3 – 腹水/腹膜沖洗細胞學陽性</option>
+        <option value="T2a">T2a – 子宮或輸卵管轉移</option>
+        <option value="T2b">T2b – 其他骨盆組織轉移</option>
+        <option value="T3a">T3a – 腹腔顯微轉移</option>
+        <option value="T3b">T3b – 腹腔轉移 ≤2 cm</option>
+        <option value="T3c">T3c – 腹腔轉移 &gt;2 cm</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 N – 淋巴結</div>
+      <select id="ov_n">
+        <option value="N0">N0 – 無淋巴結轉移</option>
+        <option value="N1a">N1a – 腹膜後轉移 ≤10 mm</option>
+        <option value="N1b">N1b – 腹膜後轉移 &gt;10 mm</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 M – 遠端轉移</div>
+      <select id="ov_m">
+        <option value="M0">M0 – 無遠端轉移</option>
+        <option value="M1a">M1a – 胸水細胞學陽性</option>
+        <option value="M1b">M1b – 肝脾實質或腹外器官轉移</option>
+      </select>
+    </div>
+    <button class="btn" onclick="stageOvarian()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="ov_result"></div>
       <div class="result-box result-info" id="ov_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== 子宮頸癌 ===== -->
-    <div class="page" id="page-cervical">
-      <div class="page-title">子宮頸癌分期</div>
-      <div class="page-sub">Cervical Cancer · FIGO 2018 &amp; AJCC TNM</div>
-      <div class="card">
-        <h3>🔷 T Stage</h3>
-        <select id="cx_t">
-          <option value="T1a1">T1a1: Stromal invasion &lt;3 mm</option>
-          <option value="T1a2">T1a2: Stromal invasion 3–5 mm</option>
-          <option value="T1b1">T1b1: Invasion ≥5 mm depth, &lt;2 cm dimension</option>
-          <option value="T1b2">T1b2: Dimension 2–4 cm</option>
-          <option value="T1b3">T1b3: Dimension ≥4 cm</option>
-          <option value="T2a1">T2a1: Vaginal involvement &lt;4 cm</option>
-          <option value="T2a2">T2a2: Vaginal involvement ≥4 cm</option>
-          <option value="T2b">T2b: Parametrial invasion</option>
-          <option value="T3a">T3a: Lower third vagina</option>
-          <option value="T3b">T3b: Pelvic wall / hydronephrosis</option>
-          <option value="T3c1">T3c1: Pelvic LN metastasis</option>
-          <option value="T3c2">T3c2: Paraaortic LN metastasis</option>
-          <option value="T4">T4: Beyond true pelvis or biopsy-proven bladder/rectum mucosal involvement</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 N Stage</h3>
-        <select id="cx_n">
-          <option value="N0">N0: No regional LN metastasis</option>
-          <option value="N0i">N0(i+): Isolated tumor cells ≤0.2 mm</option>
-          <option value="N1">N1: Regional LN metastasis</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 M Stage</h3>
-        <select id="cx_m">
-          <option value="M0">M0: No distant metastasis</option>
-          <option value="M1">M1: Distant metastasis</option>
-        </select>
-      </div>
-      <button class="btn btn-full" onclick="stageCervical()">⚡ 計算分期</button>
+  <!-- ===== 子宮頸癌 ===== -->
+  <div class="page" id="page-cervical">
+    <div class="page-title">子宮頸癌分期</div>
+    <div class="page-sub">Cervical Cancer · FIGO 2018</div>
+    <div class="card">
+      <div class="card-title">🔷 T Stage</div>
+      <select id="cx_t">
+        <option value="T1a1">T1a1 – Stromal invasion &lt;3 mm</option>
+        <option value="T1a2">T1a2 – Stromal invasion 3–5 mm</option>
+        <option value="T1b1">T1b1 – Invasion ≥5 mm, &lt;2 cm</option>
+        <option value="T1b2">T1b2 – Dimension 2–4 cm</option>
+        <option value="T1b3">T1b3 – Dimension ≥4 cm</option>
+        <option value="T2a1">T2a1 – Vaginal involvement &lt;4 cm</option>
+        <option value="T2a2">T2a2 – Vaginal involvement ≥4 cm</option>
+        <option value="T2b">T2b – Parametrial invasion</option>
+        <option value="T3a">T3a – Lower third vagina</option>
+        <option value="T3b">T3b – Pelvic wall / hydronephrosis</option>
+        <option value="T3c1">T3c1 – Pelvic LN metastasis</option>
+        <option value="T3c2">T3c2 – Paraaortic LN metastasis</option>
+        <option value="T4">T4 – Bladder/rectum mucosal or beyond pelvis</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 N Stage</div>
+      <select id="cx_n">
+        <option value="N0">N0 – No regional LN metastasis</option>
+        <option value="N0i">N0(i+) – Isolated tumor cells ≤0.2 mm</option>
+        <option value="N1">N1 – Regional LN metastasis</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 M Stage</div>
+      <select id="cx_m">
+        <option value="M0">M0 – No distant metastasis</option>
+        <option value="M1">M1 – Distant metastasis</option>
+      </select>
+    </div>
+    <button class="btn" onclick="stageCervical()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="cx_result"></div>
       <div class="result-box result-info" id="cx_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== 子宮惡性肉瘤 ===== -->
-    <div class="page" id="page-sarcoma">
-      <div class="page-title">子宮惡性肉瘤分期</div>
-      <div class="page-sub">Uterine Sarcoma · FIGO &amp; AJCC TNM</div>
+  <!-- ===== 子宮惡性肉瘤 ===== -->
+  <div class="page" id="page-sarcoma">
+    <div class="page-title">子宮惡性肉瘤分期</div>
+    <div class="page-sub">Uterine Sarcoma · FIGO &amp; AJCC TNM</div>
+    <div class="card">
+      <div class="card-title">🔬 Sarcoma Type</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="sarc_type" value="LMS" checked onchange="updateSarcomaT()"> Leiomyosarcoma</label>
+        <label class="radio-item"><input type="radio" name="sarc_type" value="ESS" onchange="updateSarcomaT()"> Endometrial Stromal Sarcoma</label>
+        <label class="radio-item"><input type="radio" name="sarc_type" value="MAS" onchange="updateSarcomaT()"> Müllerian Adenosarcoma</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 T Stage</div>
+      <select id="sarc_t"></select>
+    </div>
+    <div class="two-col">
       <div class="card">
-        <h3>🔬 Sarcoma Type</h3>
-        <div class="radio-group" id="sarc_type_group">
-          <label class="radio-item"><input type="radio" name="sarc_type" value="LMS" checked onchange="updateSarcomaT()"> Leiomyosarcoma</label>
-          <label class="radio-item"><input type="radio" name="sarc_type" value="ESS" onchange="updateSarcomaT()"> Endometrial Stromal Sarcoma</label>
-          <label class="radio-item"><input type="radio" name="sarc_type" value="MAS" onchange="updateSarcomaT()"> Müllerian Adenosarcoma</label>
-        </div>
+        <div class="card-title">🔷 N Stage</div>
+        <select id="sarc_n">
+          <option value="N0">N0 – No regional LN metastasis</option>
+          <option value="N1">N1 – Regional LN metastasis</option>
+        </select>
       </div>
       <div class="card">
-        <h3>🔷 T Stage</h3>
-        <select id="sarc_t"></select>
+        <div class="card-title">🔷 M Stage</div>
+        <select id="sarc_m">
+          <option value="M0">M0 – No distant metastasis</option>
+          <option value="M1">M1 – Distant metastasis</option>
+        </select>
       </div>
-      <div class="form-grid">
-        <div class="card">
-          <h3>🔷 N Stage</h3>
-          <select id="sarc_n">
-            <option value="N0">N0: No regional LN metastasis</option>
-            <option value="N1">N1: Regional LN metastasis</option>
-          </select>
-        </div>
-        <div class="card">
-          <h3>🔷 M Stage</h3>
-          <select id="sarc_m">
-            <option value="M0">M0: No distant metastasis</option>
-            <option value="M1">M1: Distant metastasis</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-full" onclick="stageSarcoma()">⚡ 計算分期</button>
+    </div>
+    <button class="btn" onclick="stageSarcoma()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="sarc_result"></div>
       <div class="result-box result-info" id="sarc_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== 外陰黑色素瘤 ===== -->
-    <div class="page" id="page-melanoma">
-      <div class="page-title">外陰黑色素瘤分期</div>
-      <div class="page-sub">Vulvar Melanoma · AJCC 8th Edition</div>
-      <div class="card">
-        <h3>🔷 T 分類</h3>
-        <select id="mel_t">
-          <option value="Tis">Tis – 原位癌</option>
-          <option value="T1a">T1a – 腫瘤&lt;0.8mm，無潰瘍</option>
-          <option value="T1b">T1b – 腫瘤&lt;0.8mm有潰瘍，或0.8–1.0mm</option>
-          <option value="T2a">T2a – 腫瘤&gt;1.0–2.0mm，無潰瘍</option>
-          <option value="T2b">T2b – 腫瘤&gt;1.0–2.0mm，有潰瘍</option>
-          <option value="T3a">T3a – 腫瘤&gt;2.0–4.0mm，無潰瘍</option>
-          <option value="T3b">T3b – 腫瘤&gt;2.0–4.0mm，有潰瘍</option>
-          <option value="T4a">T4a – 腫瘤&gt;4.0mm，無潰瘍</option>
-          <option value="T4b">T4b – 腫瘤&gt;4.0mm，有潰瘍</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 N 分類</h3>
-        <select id="mel_n">
-          <option value="N0">N0 – 無區域淋巴結轉移</option>
-          <option value="N1a">N1a – 單一隱匿性轉移淋巴結</option>
-          <option value="N1b">N1b – 單一臨床偵測淋巴結</option>
-          <option value="N1c">N1c – 無淋巴結但有衛星/微衛星轉移</option>
-          <option value="N2a">N2a – 2–3個隱匿性轉移淋巴結</option>
-          <option value="N2b">N2b – 2–3個中至少一個臨床偵測</option>
-          <option value="N2c">N2c – 一個臨床/隱匿性淋巴結且有衛星轉移</option>
-          <option value="N3a">N3a – ≥4個隱匿性轉移淋巴結</option>
-          <option value="N3b">N3b – ≥4個中至少一個臨床偵測</option>
-          <option value="N3c">N3c – ≥2個臨床/隱匿性淋巴結或融合淋巴結</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 M 分類</h3>
-        <select id="mel_m">
-          <option value="M0">M0 – 無遠處轉移</option>
-          <option value="M1a0">M1a(0) – 皮膚/軟組織/非區域淋巴結，LDH不升高</option>
-          <option value="M1a1">M1a(1) – 皮膚/軟組織/非區域淋巴結，LDH升高</option>
-          <option value="M1b0">M1b(0) – 肺轉移，LDH不升高</option>
-          <option value="M1b1">M1b(1) – 肺轉移，LDH升高</option>
-          <option value="M1c0">M1c(0) – 非中樞內臟器官轉移，LDH不升高</option>
-          <option value="M1c1">M1c(1) – 非中樞內臟器官轉移，LDH升高</option>
-          <option value="M1d0">M1d(0) – 中樞神經系統轉移，LDH正常</option>
-          <option value="M1d1">M1d(1) – 中樞神經系統轉移，LDH升高</option>
-        </select>
-      </div>
-      <button class="btn btn-full" onclick="stageMelanoma()">⚡ 計算分期</button>
+  <!-- ===== 外陰黑色素瘤 ===== -->
+  <div class="page" id="page-melanoma">
+    <div class="page-title">外陰黑色素瘤分期</div>
+    <div class="page-sub">Vulvar Melanoma · AJCC 8th Edition</div>
+    <div class="card">
+      <div class="card-title">🔷 T 分類</div>
+      <select id="mel_t">
+        <option value="Tis">Tis – 原位癌</option>
+        <option value="T1a">T1a – &lt;0.8mm，無潰瘍</option>
+        <option value="T1b">T1b – &lt;0.8mm有潰瘍，或0.8–1.0mm</option>
+        <option value="T2a">T2a – 1.0–2.0mm，無潰瘍</option>
+        <option value="T2b">T2b – 1.0–2.0mm，有潰瘍</option>
+        <option value="T3a">T3a – 2.0–4.0mm，無潰瘍</option>
+        <option value="T3b">T3b – 2.0–4.0mm，有潰瘍</option>
+        <option value="T4a">T4a – &gt;4.0mm，無潰瘍</option>
+        <option value="T4b">T4b – &gt;4.0mm，有潰瘍</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 N 分類</div>
+      <select id="mel_n">
+        <option value="N0">N0 – 無區域淋巴結轉移</option>
+        <option value="N1a">N1a – 單一隱匿性轉移淋巴結</option>
+        <option value="N1b">N1b – 單一臨床偵測淋巴結</option>
+        <option value="N1c">N1c – 無淋巴結但有衛星/微衛星轉移</option>
+        <option value="N2a">N2a – 2–3個隱匿性轉移淋巴結</option>
+        <option value="N2b">N2b – 2–3個中至少一個臨床偵測</option>
+        <option value="N2c">N2c – 一個臨床/隱匿性淋巴結且有衛星轉移</option>
+        <option value="N3a">N3a – ≥4個隱匿性轉移淋巴結</option>
+        <option value="N3b">N3b – ≥4個中至少一個臨床偵測</option>
+        <option value="N3c">N3c – ≥2個臨床/隱匿性淋巴結或融合淋巴結</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 M 分類</div>
+      <select id="mel_m">
+        <option value="M0">M0 – 無遠處轉移</option>
+        <option value="M1a0">M1a(0) – 皮膚/軟組織/非區域淋巴結，LDH正常</option>
+        <option value="M1a1">M1a(1) – 皮膚/軟組織/非區域淋巴結，LDH升高</option>
+        <option value="M1b0">M1b(0) – 肺轉移，LDH正常</option>
+        <option value="M1b1">M1b(1) – 肺轉移，LDH升高</option>
+        <option value="M1c0">M1c(0) – 非中樞內臟轉移，LDH正常</option>
+        <option value="M1c1">M1c(1) – 非中樞內臟轉移，LDH升高</option>
+        <option value="M1d0">M1d(0) – 中樞神經轉移，LDH正常</option>
+        <option value="M1d1">M1d(1) – 中樞神經轉移，LDH升高</option>
+      </select>
+    </div>
+    <button class="btn" onclick="stageMelanoma()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="mel_result"></div>
       <div class="result-box result-info" id="mel_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== 陰道癌 ===== -->
-    <div class="page" id="page-vaginal">
-      <div class="page-title">陰道癌分期</div>
-      <div class="page-sub">Vaginal Cancer · FIGO &amp; AJCC TNM</div>
-      <div class="card">
-        <h3>🔷 T – 腫瘤大小與侵犯</h3>
-        <select id="vag_t">
-          <option value="T1a">T1a – 侷限於陰道，最大直徑 ≤2.0 cm</option>
-          <option value="T1b">T1b – 侷限於陰道，最大直徑 &gt;2.0 cm</option>
-          <option value="T2a">T2a – 穿透陰道壁但未達骨盆壁，直徑 ≤2.0 cm</option>
-          <option value="T2b">T2b – 穿透陰道壁但未達骨盆壁，直徑 &gt;2.0 cm</option>
-          <option value="T3">T3 – 已達骨盆壁或引起腎積水</option>
-          <option value="T4">T4 – 侵犯膀胱或直腸，或超出骨盆腔</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 N – 淋巴結</h3>
-        <select id="vag_n">
-          <option value="N0">N0 – 無區域淋巴結轉移</option>
-          <option value="N1">N1 – 骨盆或鼠蹊區淋巴結轉移</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 M – 遠處轉移</h3>
-        <select id="vag_m">
-          <option value="M0">M0 – 無遠處轉移</option>
-          <option value="M1">M1 – 有遠處轉移（肺、肝、骨）</option>
-        </select>
-      </div>
-      <button class="btn btn-full" onclick="stageVaginal()">⚡ 計算分期</button>
+  <!-- ===== 陰道癌 ===== -->
+  <div class="page" id="page-vaginal">
+    <div class="page-title">陰道癌分期</div>
+    <div class="page-sub">Vaginal Cancer · FIGO &amp; AJCC TNM</div>
+    <div class="card">
+      <div class="card-title">🔷 T – 腫瘤大小與侵犯</div>
+      <select id="vag_t">
+        <option value="T1a">T1a – 侷限於陰道，≤2.0 cm</option>
+        <option value="T1b">T1b – 侷限於陰道，&gt;2.0 cm</option>
+        <option value="T2a">T2a – 穿透陰道壁，≤2.0 cm</option>
+        <option value="T2b">T2b – 穿透陰道壁，&gt;2.0 cm</option>
+        <option value="T3">T3 – 達骨盆壁或腎積水</option>
+        <option value="T4">T4 – 侵犯膀胱/直腸或超出骨盆</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 N – 淋巴結</div>
+      <select id="vag_n">
+        <option value="N0">N0 – 無區域淋巴結轉移</option>
+        <option value="N1">N1 – 骨盆或鼠蹊淋巴結轉移</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 M – 遠處轉移</div>
+      <select id="vag_m">
+        <option value="M0">M0 – 無遠處轉移</option>
+        <option value="M1">M1 – 有遠處轉移</option>
+      </select>
+    </div>
+    <button class="btn" onclick="stageVaginal()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="vag_result"></div>
       <div class="result-box result-info" id="vag_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== GTN ===== -->
-    <div class="page" id="page-gtn">
-      <div class="page-title">妊娠滋養層細胞腫瘤分期</div>
-      <div class="page-sub">GTN · FIGO &amp; WHO Risk Score</div>
-      <div class="form-grid">
-        <div class="card">
-          <h3>🔷 解剖分期</h3>
-          <div class="form-group">
-            <label class="field-label">T 分類</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="gtn_t" value="T1" checked> T1 – 腫瘤侷限於子宮</label>
-              <label class="radio-item"><input type="radio" name="gtn_t" value="T2"> T2 – 腫瘤延伸至其他生殖器官</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="field-label">M 分類</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="gtn_m" value="M0" checked> M0 – 無遠處轉移</label>
-              <label class="radio-item"><input type="radio" name="gtn_m" value="M1a"> M1a – 肺轉移</label>
-              <label class="radio-item"><input type="radio" name="gtn_m" value="M1b"> M1b – 其他遠處轉移</label>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h3>⚠️ WHO 風險評分</h3>
-          <div class="form-group">
-            <label class="field-label">年齡</label>
-            <select id="gtn_age"><option value="0">0 – &lt;40 歲</option><option value="1">1 – ≥40 歲</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">前次懷孕</label>
-            <select id="gtn_preg"><option value="0">0 – 葡萄胎</option><option value="1">1 – 流產</option><option value="2">2 – 足月妊娠</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">距前次妊娠時間</label>
-            <select id="gtn_interval"><option value="0">0 – &lt;4 個月</option><option value="1">1 – 4–6 個月</option><option value="2">2 – 7–12 個月</option><option value="4">4 – &gt;12 個月</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">治療前 hCG (IU/mL)</label>
-            <select id="gtn_hcg"><option value="0">0 – &lt;10³</option><option value="1">1 – 10³–10⁴</option><option value="2">2 – 10⁴–10⁵</option><option value="4">4 – ≥10⁵</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">腫瘤最大直徑</label>
-            <select id="gtn_size"><option value="0">0 – &lt;3 cm</option><option value="1">1 – 3–5 cm</option><option value="2">2 – &gt;5 cm</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">轉移位置</label>
-            <select id="gtn_site"><option value="0">0 – 無或僅肺</option><option value="1">1 – 脾臟/腎臟</option><option value="2">2 – 腸胃道</option><option value="4">4 – 腦/肝臟</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">轉移病灶數量</label>
-            <select id="gtn_num"><option value="0">0 – 無</option><option value="1">1 – 1–4 處</option><option value="2">2 – 5–8 處</option><option value="4">4 – &gt;8 處</option></select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">化療失敗次數</label>
-            <select id="gtn_chemo"><option value="0">0 – 無</option><option value="2">2 – 單一藥物</option><option value="4">4 – 兩種以上藥物</option></select>
-          </div>
-        </div>
+  <!-- ===== GTN ===== -->
+  <div class="page" id="page-gtn">
+    <div class="page-title">妊娠滋養層細胞腫瘤</div>
+    <div class="page-sub">GTN · FIGO &amp; WHO Risk Score</div>
+    <div class="card">
+      <div class="card-title">🔷 T 分類</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="gtn_t" value="T1" checked> T1 – 腫瘤侷限於子宮</label>
+        <label class="radio-item"><input type="radio" name="gtn_t" value="T2"> T2 – 腫瘤延伸至其他生殖器官</label>
       </div>
-      <button class="btn btn-full" onclick="stageGTN()">⚡ 計算分期與風險</button>
-      <div class="result-box result-success" id="gtn_result"></div>
-      <div class="result-box result-info" id="gtn_score"></div>
     </div>
+    <div class="card">
+      <div class="card-title">🔷 M 分類</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="gtn_m" value="M0" checked> M0 – 無遠處轉移</label>
+        <label class="radio-item"><input type="radio" name="gtn_m" value="M1a"> M1a – 肺轉移</label>
+        <label class="radio-item"><input type="radio" name="gtn_m" value="M1b"> M1b – 其他遠處轉移</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ WHO 風險評分</div>
+      <div class="form-group">
+        <label class="field-label">年齡</label>
+        <select id="gtn_age"><option value="0">0 – &lt;40 歲</option><option value="1">1 – ≥40 歲</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">前次懷孕</label>
+        <select id="gtn_preg"><option value="0">0 – 葡萄胎</option><option value="1">1 – 流產</option><option value="2">2 – 足月妊娠</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">距前次妊娠時間</label>
+        <select id="gtn_interval"><option value="0">0 – &lt;4 個月</option><option value="1">1 – 4–6 個月</option><option value="2">2 – 7–12 個月</option><option value="4">4 – &gt;12 個月</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">治療前 hCG (IU/mL)</label>
+        <select id="gtn_hcg"><option value="0">0 – &lt;10³</option><option value="1">1 – 10³–10⁴</option><option value="2">2 – 10⁴–10⁵</option><option value="4">4 – ≥10⁵</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">腫瘤最大直徑</label>
+        <select id="gtn_size"><option value="0">0 – &lt;3 cm</option><option value="1">1 – 3–5 cm</option><option value="2">2 – &gt;5 cm</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">轉移位置</label>
+        <select id="gtn_site"><option value="0">0 – 無或僅肺</option><option value="1">1 – 脾臟/腎臟</option><option value="2">2 – 腸胃道</option><option value="4">4 – 腦/肝臟</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">轉移病灶數量</label>
+        <select id="gtn_num"><option value="0">0 – 無</option><option value="1">1 – 1–4 處</option><option value="2">2 – 5–8 處</option><option value="4">4 – &gt;8 處</option></select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">化療失敗次數</label>
+        <select id="gtn_chemo"><option value="0">0 – 無</option><option value="2">2 – 單一藥物</option><option value="4">4 – 兩種以上藥物</option></select>
+      </div>
+    </div>
+    <button class="btn" onclick="stageGTN()">⚡ 計算分期與風險</button>
+    <div class="result-wrap">
+      <div class="result-box result-success" id="gtn_result"></div>
+      <div class="result-box result-warning" id="gtn_score"></div>
+    </div>
+  </div>
 
-    <!-- ===== 外陰癌 ===== -->
-    <div class="page" id="page-vulvar">
-      <div class="page-title">外陰癌分期</div>
-      <div class="page-sub">Vulvar Cancer · FIGO 2021 &amp; AJCC TNM</div>
-      <div class="card">
-        <h3>🔷 T 分期</h3>
-        <select id="vul_t">
-          <option value="Tis">Tis – 原位癌</option>
-          <option value="T1a">T1a – 病灶 ≤2 cm，浸潤深度 ≤1.0 mm</option>
-          <option value="T1b">T1b – 病灶 &gt;2 cm 或浸潤深度 &gt;1.0 mm</option>
-          <option value="T2">T2 – 延伸至鄰近會陰結構（下1/3尿道、下1/3陰道或肛門）</option>
-          <option value="T3">T3 – 侵犯上2/3尿道、上2/3陰道、膀胱黏膜、直腸黏膜或固定於骨盆骨</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 N 分期</h3>
-        <select id="vul_n">
-          <option value="N0">N0 – 無區域淋巴結轉移</option>
-          <option value="N1a">N1a – 1或2個淋巴結轉移，各 &lt;5 mm</option>
-          <option value="N1b">N1b – 1個淋巴結轉移 ≥5 mm</option>
-          <option value="N2a">N2a – ≥3個淋巴結轉移，各 &lt;5 mm</option>
-          <option value="N2b">N2b – ≥2個淋巴結轉移 ≥5 mm</option>
-          <option value="N2c">N2c – 淋巴結轉移伴隨外囊侵犯</option>
-          <option value="N3">N3 – 固定或潰瘍性淋巴結轉移</option>
-        </select>
-      </div>
-      <div class="card">
-        <h3>🔷 M 分期</h3>
-        <select id="vul_m">
-          <option value="M0">M0 – 無遠處轉移</option>
-          <option value="M1">M1 – 有遠處轉移（含骨盆淋巴結轉移）</option>
-        </select>
-      </div>
-      <button class="btn btn-full" onclick="stageVulvar()">⚡ 計算分期</button>
+  <!-- ===== 外陰癌 ===== -->
+  <div class="page" id="page-vulvar">
+    <div class="page-title">外陰癌分期</div>
+    <div class="page-sub">Vulvar Cancer · FIGO 2021</div>
+    <div class="card">
+      <div class="card-title">🔷 T 分期</div>
+      <select id="vul_t">
+        <option value="Tis">Tis – 原位癌</option>
+        <option value="T1a">T1a – 病灶 ≤2 cm，浸潤深度 ≤1.0 mm</option>
+        <option value="T1b">T1b – 病灶 &gt;2 cm 或浸潤深度 &gt;1.0 mm</option>
+        <option value="T2">T2 – 延伸至下1/3尿道、下1/3陰道或肛門</option>
+        <option value="T3">T3 – 侵犯上2/3尿道、上2/3陰道、膀胱/直腸黏膜或骨盆骨</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 N 分期</div>
+      <select id="vul_n">
+        <option value="N0">N0 – 無區域淋巴結轉移</option>
+        <option value="N1a">N1a – 1–2個淋巴結，各 &lt;5 mm</option>
+        <option value="N1b">N1b – 1個淋巴結 ≥5 mm</option>
+        <option value="N2a">N2a – ≥3個淋巴結，各 &lt;5 mm</option>
+        <option value="N2b">N2b – ≥2個淋巴結 ≥5 mm</option>
+        <option value="N2c">N2c – 淋巴結轉移伴外囊侵犯</option>
+        <option value="N3">N3 – 固定或潰瘍性淋巴結轉移</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">🔷 M 分期</div>
+      <select id="vul_m">
+        <option value="M0">M0 – 無遠處轉移</option>
+        <option value="M1">M1 – 有遠處轉移（含骨盆淋巴結）</option>
+      </select>
+    </div>
+    <button class="btn" onclick="stageVulvar()">⚡ 計算分期</button>
+    <div class="result-wrap">
       <div class="result-box result-success" id="vul_result"></div>
       <div class="result-box result-info" id="vul_tnm"></div>
     </div>
+  </div>
 
-    <!-- ===== AI PAGE ===== -->
-    <div class="page" id="page-ai">
-      <div class="page-title">🤖 AI 智慧判讀 (Beta)</div>
-      <div class="page-sub">上傳病理報告或影像報告，由 Gemini AI 解讀並判定分期</div>
-
-      <div class="api-note">
-        ⚠️ <strong>隱私警告：</strong>請勿上傳含有真實病患姓名、身分證號碼等個人識別資料的圖片。本功能僅供臨床輔助參考，最終分期應由醫師確認。
-      </div>
-
-      <div class="settings-card">
-        <label>🔑 Gemini API Key</label>
-        <input type="password" id="ai_apikey" placeholder="請輸入 Google Gemini API Key...">
-      </div>
-
-      <div class="card">
-        <h3>🩺 癌症類型上下文</h3>
-        <select id="ai_context">
-          <option value="子宮內膜癌">子宮內膜癌</option>
-          <option value="卵巢癌">卵巢癌</option>
-          <option value="子宮頸癌">子宮頸癌</option>
-          <option value="子宮惡性肉瘤">子宮惡性肉瘤</option>
-          <option value="外陰癌">外陰癌</option>
-          <option value="陰道癌">陰道癌</option>
-          <option value="GTN">妊娠滋養層細胞腫瘤 (GTN)</option>
-          <option value="自動判斷">自動判斷</option>
-        </select>
-      </div>
-
-      <div class="card">
-        <h3>📄 上傳病理/影像報告</h3>
-        <div class="upload-area" onclick="document.getElementById('ai_files').click()">
-          <input type="file" id="ai_files" accept="image/png,image/jpg,image/jpeg" multiple onchange="previewImages(event)">
-          <div class="upload-icon">📎</div>
-          <p><strong>點擊選擇圖片</strong>，或拖曳至此處</p>
-          <p style="margin-top:6px;font-size:0.78rem;">支援 JPG / PNG，可多張上傳</p>
-        </div>
-        <div class="preview-grid" id="ai_preview"></div>
-      </div>
-
-      <button class="btn btn-full" onclick="runAI()">🔬 開始 AI 分析</button>
-
-      <div class="spinner" id="ai_spinner">AI 正在仔細閱讀報告並進行分期運算...</div>
-      <div class="ai-result" id="ai_result">
-        <h3>📋 AI 分析結果 <span style="font-weight:300;font-size:0.8em;color:var(--text-muted);">Gemini 2.5 Flash</span></h3>
-        <div id="ai_result_body"></div>
-      </div>
+  <!-- ===== AI ===== -->
+  <div class="page" id="page-ai">
+    <div class="page-title">🤖 AI 智慧判讀</div>
+    <div class="page-sub">上傳病理/影像報告，由 Gemini AI 解讀並判定分期</div>
+    <div class="api-warn">
+      ⚠️ <strong>隱私警告：</strong>請勿上傳含有真實病患姓名、身分證號碼等個資的圖片。本功能僅供臨床輔助，最終分期須由醫師確認。
     </div>
+    <div class="card">
+      <div class="card-title">🔑 Gemini API Key</div>
+      <input type="password" id="ai_apikey" placeholder="請輸入 Google Gemini API Key...">
+    </div>
+    <div class="card">
+      <div class="card-title">🩺 癌症類型上下文</div>
+      <select id="ai_context">
+        <option>子宮內膜癌</option><option>卵巢癌</option><option>子宮頸癌</option>
+        <option>子宮惡性肉瘤</option><option>外陰癌</option><option>陰道癌</option>
+        <option>妊娠滋養層細胞腫瘤 (GTN)</option><option>自動判斷</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">📄 上傳報告圖片</div>
+      <div class="upload-area" id="upload_area">
+        <input type="file" id="ai_files" accept="image/png,image/jpg,image/jpeg" multiple onchange="previewImages(event)">
+        <div class="upload-icon">📎</div>
+        <p><strong>點擊或拖曳上傳圖片</strong></p>
+        <p style="margin-top:5px;font-size:0.76rem;">支援 JPG / PNG，可多張上傳</p>
+      </div>
+      <div class="preview-grid" id="ai_preview"></div>
+    </div>
+    <button class="btn" onclick="runAI()">🔬 開始 AI 分析</button>
+    <div class="spinner" id="ai_spinner">
+      <div class="spin-circle"></div>
+      AI 正在仔細閱讀報告並進行分期運算...
+    </div>
+    <div class="ai-result-box" id="ai_result">
+      <h2>📋 AI 分析結果 <span style="font-weight:300;font-size:0.8em;color:var(--text-muted);">Gemini 2.5 Flash</span></h2>
+      <div id="ai_result_body"></div>
+    </div>
+  </div>
 
-  </main>
+</main>
 </div>
 
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-scroll">
+    <button class="active" onclick="showPage('endometrial',this)"><span class="nav-icon">📋</span>內膜癌</button>
+    <button onclick="showPage('ovarian',this)"><span class="nav-icon">🔵</span>卵巢癌</button>
+    <button onclick="showPage('cervical',this)"><span class="nav-icon">🔴</span>子宮頸</button>
+    <button onclick="showPage('sarcoma',this)"><span class="nav-icon">🟠</span>肉瘤</button>
+    <button onclick="showPage('melanoma',this)"><span class="nav-icon">⚫</span>黑色素瘤</button>
+    <button onclick="showPage('vaginal',this)"><span class="nav-icon">🟣</span>陰道癌</button>
+    <button onclick="showPage('gtn',this)"><span class="nav-icon">🟡</span>GTN</button>
+    <button onclick="showPage('vulvar',this)"><span class="nav-icon">🟤</span>外陰癌</button>
+    <button onclick="showPage('ai',this)"><span class="nav-icon">🤖</span>AI 判讀</button>
+  </div>
+</nav>
+
 <script>
-// ========================= NAVIGATION =========================
+// ── NAVIGATION ──
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('aside button, .bottom-nav-scroll button').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  btn.classList.add('active');
+  // activate matching buttons in both sidebar & bottom nav
+  document.querySelectorAll(`aside button, .bottom-nav-scroll button`).forEach(b => {
+    if (b.getAttribute('onclick') === `showPage('${id}',this)`) b.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ========================= HELPERS =========================
-function showResult(elId, msg, info = null) {
-  const el = document.getElementById(elId);
-  el.textContent = '✅ ' + msg;
-  el.className = 'result-box result-success show';
-  if (info) {
-    const infoEl = document.getElementById(elId.replace('result', 'tnm') || elId + '_info');
-    if (infoEl) { infoEl.textContent = 'AJCC TNM: ' + info; infoEl.className = 'result-box result-info show'; }
-  }
-}
-function showScore(elId, msg) {
-  const el = document.getElementById(elId);
-  el.textContent = msg;
-  el.className = 'result-box result-info show';
-}
+// ── HELPERS ──
 function radioVal(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value; }
-function chk(id) { return document.getElementById(id)?.checked; }
+function chk(id) { return !!document.getElementById(id)?.checked; }
+function showResult(id, msg, tnm) {
+  const el = document.getElementById(id);
+  el.innerHTML = '✅ ' + msg;
+  el.className = 'result-box result-success show';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const tnmId = id.replace('result', 'tnm').replace('_result', '_tnm');
+  const tnmEl = document.getElementById(tnmId) || document.getElementById(id + '_tnm');
+  if (tnmEl && tnm) { tnmEl.innerHTML = '📊 AJCC TNM: ' + tnm; tnmEl.className = 'result-box result-info show'; }
+}
+function showExtra(id, msg, cls) {
+  const el = document.getElementById(id);
+  el.innerHTML = msg; el.className = `result-box ${cls} show`;
+}
 
-// ========================= ENDOMETRIAL =========================
+// ── ENDOMETRIAL ──
 function stageEndometrial() {
   const histo = radioVal('ec_histo');
   const myo = radioVal('ec_myo');
   const lvsi = radioVal('ec_lvsi');
   const ln = radioVal('ec_ln');
-  const aggressive = histo === 'aggressive';
-
-  let T = 'T1a';
-  if (myo === 'ge50') T = 'T1b';
+  const ag = histo === 'aggressive';
+  let T = myo === 'ge50' ? 'T1b' : 'T1a';
   if (chk('ec_cervical')) T = 'T2';
   if (chk('ec_serosa') || chk('ec_ovarian_tubal') || chk('ec_ovarian_limited')) T = 'T3a';
   if (chk('ec_vaginal') || chk('ec_pelvic_peri')) T = 'T3b';
   if (chk('ec_bladder')) T = 'T4';
-
   let N = 'N0';
   if (chk('ec_pelvic_ln')) N = ln === 'micro' ? 'N1mi' : 'N1a';
   if (chk('ec_pa_ln')) N = ln === 'micro' ? 'N2mi' : 'N2a';
-
-  let M = chk('ec_distant') ? 'M1' : 'M0';
-  let result = '';
-  const tnm = `${T} ${N} ${M}`;
-
-  if (chk('ec_pole') && ['T1a','T1b','T2'].includes(T) && N==='N0' && M==='M0') result = 'Stage IAmPOLEmut';
-  else if (chk('ec_p53') && ['T1a','T1b','T2'].includes(T) && N==='N0' && M==='M0') result = 'Stage IICmp53abn';
-  else if (M==='M1') result = 'FIGO Stage 4C';
-  else if (chk('ec_upper_abd')) result = 'FIGO Stage 4B';
-  else if (T==='T4') result = 'FIGO Stage 4A';
-  else if (N==='N2mi') result = 'FIGO Stage 3C2i';
-  else if (N==='N2a') result = 'FIGO Stage 3C2ii';
-  else if (N==='N1mi') result = 'FIGO Stage 3C1i';
-  else if (N==='N1a') result = 'FIGO Stage 3C1ii';
-  else if (chk('ec_serosa')) result = 'FIGO Stage 3A2';
-  else if (chk('ec_ovarian_limited') && !aggressive && (myo==='none'||myo==='lt50') && lvsi!=='extensive') result = 'FIGO Stage 1A3';
-  else if (chk('ec_ovarian_tubal') || chk('ec_ovarian_limited')) result = 'FIGO Stage 3A1';
-  else if (chk('ec_vaginal') && !chk('ec_pelvic_peri')) result = 'FIGO Stage 3B1';
-  else if (chk('ec_pelvic_peri')) result = 'FIGO Stage 3B2';
-  else if (aggressive && myo !== 'none') result = 'FIGO Stage 2C';
-  else if (chk('ec_cervical') && !aggressive) result = 'FIGO Stage 2A';
-  else if (lvsi==='extensive' && !aggressive) result = 'FIGO Stage 2B';
-  else if (!aggressive) {
-    if (myo==='ge50') result = 'FIGO Stage 1B';
-    else if (myo==='lt50') result = 'FIGO Stage 1A2';
-    else result = 'FIGO Stage 1A1';
-  } else if (aggressive && myo==='none') result = 'FIGO Stage 1C';
-  else result = '需進一步評估';
-
-  showResult('ec_result', result, tnm);
+  const M = chk('ec_distant') ? 'M1' : 'M0';
+  let r = '';
+  if (chk('ec_pole') && ['T1a','T1b','T2'].includes(T) && N==='N0' && M==='M0') r = 'Stage IAmPOLEmut';
+  else if (chk('ec_p53') && ['T1a','T1b','T2'].includes(T) && N==='N0' && M==='M0') r = 'Stage IICmp53abn';
+  else if (M==='M1') r = 'FIGO Stage 4C';
+  else if (chk('ec_upper_abd')) r = 'FIGO Stage 4B';
+  else if (T==='T4') r = 'FIGO Stage 4A';
+  else if (N==='N2mi') r = 'FIGO Stage 3C2i';
+  else if (N==='N2a') r = 'FIGO Stage 3C2ii';
+  else if (N==='N1mi') r = 'FIGO Stage 3C1i';
+  else if (N==='N1a') r = 'FIGO Stage 3C1ii';
+  else if (chk('ec_serosa')) r = 'FIGO Stage 3A2';
+  else if (chk('ec_ovarian_limited') && !ag && myo!=='ge50' && lvsi!=='extensive') r = 'FIGO Stage 1A3';
+  else if (chk('ec_ovarian_tubal') || chk('ec_ovarian_limited')) r = 'FIGO Stage 3A1';
+  else if (chk('ec_vaginal') && !chk('ec_pelvic_peri')) r = 'FIGO Stage 3B1';
+  else if (chk('ec_pelvic_peri')) r = 'FIGO Stage 3B2';
+  else if (ag && myo !== 'none') r = 'FIGO Stage 2C';
+  else if (chk('ec_cervical') && !ag) r = 'FIGO Stage 2A';
+  else if (lvsi==='extensive' && !ag) r = 'FIGO Stage 2B';
+  else if (!ag) { r = myo==='ge50' ? 'FIGO Stage 1B' : myo==='lt50' ? 'FIGO Stage 1A2' : 'FIGO Stage 1A1'; }
+  else if (ag && myo==='none') r = 'FIGO Stage 1C';
+  else r = '需進一步評估';
+  showResult('ec_result', r, `${T} ${N} ${M}`);
 }
 
-// ========================= OVARIAN =========================
+// ── OVARIAN ──
 function stageOvarian() {
   const T = document.getElementById('ov_t').value;
   const N = document.getElementById('ov_n').value;
   const M = document.getElementById('ov_m').value;
-  let stage = '未能分類';
-  if (M==='M1a') stage = 'Stage IVA';
-  else if (M==='M1b') stage = 'Stage IVB';
-  else if (N==='N1a') stage = 'Stage IIIA1i';
-  else if (N==='N1b') stage = 'Stage IIIA1ii';
-  else if (T==='T3a') stage = 'Stage IIIA2';
-  else if (T==='T3b') stage = 'Stage IIIB';
-  else if (T==='T3c') stage = 'Stage IIIC';
-  else if (T==='T2a') stage = 'Stage IIA';
-  else if (T==='T2b') stage = 'Stage IIB';
-  else if (T==='T1a') stage = 'Stage IA';
-  else if (T==='T1b') stage = 'Stage IB';
-  else if (T==='T1c1') stage = 'Stage IC1';
-  else if (T==='T1c2') stage = 'Stage IC2';
-  else if (T==='T1c3') stage = 'Stage IC3';
-  showResult('ov_result', stage, `${T} ${N} ${M}`);
+  const map = {M1a:'Stage IVA',M1b:'Stage IVB'};
+  let s = map[M] || '';
+  if (!s) {
+    if (N==='N1a') s='Stage IIIA1i';
+    else if (N==='N1b') s='Stage IIIA1ii';
+    else { const tm = {T3a:'IIIA2',T3b:'IIIB',T3c:'IIIC',T2a:'IIA',T2b:'IIB',T1a:'IA',T1b:'IB',T1c1:'IC1',T1c2:'IC2',T1c3:'IC3'}; s='Stage '+(tm[T]||'?'); }
+  }
+  showResult('ov_result', s, `${T} ${N} ${M}`);
 }
 
-// ========================= CERVICAL =========================
+// ── CERVICAL ──
 function stageCervical() {
   const T = document.getElementById('cx_t').value;
   const N = document.getElementById('cx_n').value;
   const M = document.getElementById('cx_m').value;
-  let figo = 'Cannot classify';
-  if (T==='T4') figo = M==='M0' ? 'Stage IVA' : 'Stage IVB';
-  else if (M==='M1') figo = 'Stage IVB';
-  else if (N==='N1'||N==='N0i') figo = 'Stage IIIC';
+  let f = '';
+  if (T==='T4') f = M==='M0' ? 'Stage IVA' : 'Stage IVB';
+  else if (M==='M1') f = 'Stage IVB';
+  else if (N==='N1'||N==='N0i') f = 'Stage IIIC';
   else {
-    const map = {T1a1:'Stage IA1',T1a2:'Stage IA2',T1b1:'Stage IB1',T1b2:'Stage IB2',T1b3:'Stage IB3',
-                 T2a1:'Stage IIA1',T2a2:'Stage IIA2',T2b:'Stage IIB',T3a:'Stage IIIA',T3b:'Stage IIIB',T3c1:'Stage IIIC1',T3c2:'Stage IIIC2'};
-    figo = map[T] || 'Cannot classify';
+    const m = {T1a1:'IA1',T1a2:'IA2',T1b1:'IB1',T1b2:'IB2',T1b3:'IB3',T2a1:'IIA1',T2a2:'IIA2',T2b:'IIB',T3a:'IIIA',T3b:'IIIB',T3c1:'IIIC1',T3c2:'IIIC2'};
+    f = 'Stage ' + (m[T]||'?');
   }
-  showResult('cx_result', `FIGO: ${figo}`, `${T} ${N} ${M}`);
+  showResult('cx_result', `FIGO: ${f}`, `${T} ${N} ${M}`);
 }
 
-// ========================= SARCOMA =========================
-const sarcomaOpts = {
-  LMS: ['T1a (≤5 cm)','T1b (>5 cm)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)'],
-  ESS: ['T1a (≤5 cm)','T1b (>5 cm)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)'],
-  MAS: ['T1a (endometrium/endocervix)','T1b (≤half myometrial invasion)','T1c (>half myometrial invasion)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)']
+// ── SARCOMA ──
+const SARC_T = {
+  LMS:['T1a (≤5 cm)','T1b (>5 cm)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)'],
+  ESS:['T1a (≤5 cm)','T1b (>5 cm)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)'],
+  MAS:['T1a (endometrium/endocervix)','T1b (≤half myometrium)','T1c (>half myometrium)','T2a (adnexa)','T2b (pelvic tissues)','T3a (one abdominal site)','T3b (>one abdominal site)','T4 (bladder/rectum)']
 };
-const sarcomaStages = {
-  LMS: {'T1a':'IA','T1b':'IB','T2a':'IIA','T2b':'IIB','T3a':'IIIA','T3b':'IIIB','T4':'IVA'},
-  ESS: {'T1a':'IA','T1b':'IB','T2a':'IIA','T2b':'IIB','T3a':'IIIA','T3b':'IIIB','T4':'IVA'},
-  MAS: {'T1a':'IA','T1b':'IB','T1c':'IC','T2a':'IIA','T2b':'IIB','T3a':'IIIA','T3b':'IIIB','T4':'IVA'}
+const SARC_ST = {
+  LMS:{T1a:'IA',T1b:'IB',T2a:'IIA',T2b:'IIB',T3a:'IIIA',T3b:'IIIB',T4:'IVA'},
+  ESS:{T1a:'IA',T1b:'IB',T2a:'IIA',T2b:'IIB',T3a:'IIIA',T3b:'IIIB',T4:'IVA'},
+  MAS:{T1a:'IA',T1b:'IB',T1c:'IC',T2a:'IIA',T2b:'IIB',T3a:'IIIA',T3b:'IIIB',T4:'IVA'}
 };
 function updateSarcomaT() {
   const type = radioVal('sarc_type');
   const sel = document.getElementById('sarc_t');
-  sel.innerHTML = sarcomaOpts[type].map(o => `<option value="${o.split(' ')[0]}">${o}</option>`).join('');
+  sel.innerHTML = SARC_T[type].map(o => `<option value="${o.split(' ')[0]}">${o}</option>`).join('');
 }
 updateSarcomaT();
 function stageSarcoma() {
@@ -919,90 +978,75 @@ function stageSarcoma() {
   const T = document.getElementById('sarc_t').value;
   const N = document.getElementById('sarc_n').value;
   const M = document.getElementById('sarc_m').value;
-  let result = '';
-  if (M==='M1') result = 'FIGO Stage IVB';
-  else if (N==='N1') result = 'FIGO Stage IIIC';
-  else result = 'FIGO Stage ' + (sarcomaStages[type][T] || 'N/A');
-  showResult('sarc_result', result, `${T} ${N} ${M}`);
+  let r = M==='M1' ? 'FIGO Stage IVB' : N==='N1' ? 'FIGO Stage IIIC' : 'FIGO Stage '+(SARC_ST[type][T]||'N/A');
+  showResult('sarc_result', r, `${T} ${N} ${M}`);
 }
 
-// ========================= MELANOMA =========================
+// ── MELANOMA ──
 function stageMelanoma() {
   const T = document.getElementById('mel_t').value;
   const N = document.getElementById('mel_n').value;
   const M = document.getElementById('mel_m').value;
-  let stage = '未分類';
-  if (T==='Tis'&&N==='N0'&&M==='M0') stage='Stage 0';
-  else if (T==='T1a'&&N==='N0'&&M==='M0') stage='Stage IA';
-  else if ((T==='T1b'||T==='T2a')&&N==='N0'&&M==='M0') stage='Stage IB';
-  else if ((T==='T2b'||T==='T3a')&&N==='N0'&&M==='M0') stage='Stage IIA';
-  else if ((T==='T3b'||T==='T4a')&&N==='N0'&&M==='M0') stage='Stage IIB';
-  else if (T==='T4b'&&N==='N0'&&M==='M0') stage='Stage IIC';
-  else if (N!=='N0'&&M==='M0') stage='Stage III';
-  else if (M!=='M0') stage='Stage IV';
-  showResult('mel_result', `AJCC ${stage}`, `${T} ${N} ${M}`);
+  let s = '未分類';
+  if (T==='Tis'&&N==='N0'&&M==='M0') s='Stage 0';
+  else if (T==='T1a'&&N==='N0'&&M==='M0') s='Stage IA';
+  else if ((T==='T1b'||T==='T2a')&&N==='N0'&&M==='M0') s='Stage IB';
+  else if ((T==='T2b'||T==='T3a')&&N==='N0'&&M==='M0') s='Stage IIA';
+  else if ((T==='T3b'||T==='T4a')&&N==='N0'&&M==='M0') s='Stage IIB';
+  else if (T==='T4b'&&N==='N0'&&M==='M0') s='Stage IIC';
+  else if (N!=='N0'&&M==='M0') s='Stage III';
+  else if (M!=='M0') s='Stage IV';
+  showResult('mel_result', `AJCC ${s}`, `${T} ${N} ${M}`);
 }
 
-// ========================= VAGINAL =========================
+// ── VAGINAL ──
 function stageVaginal() {
   const T = document.getElementById('vag_t').value;
   const N = document.getElementById('vag_n').value;
   const M = document.getElementById('vag_m').value;
-  let res = '資料不足';
-  if (M==='M1') res='FIGO Stage IVB';
-  else if (T==='T4') res='FIGO Stage IVA';
-  else if (T==='T3'&&N==='N0') res='FIGO Stage III';
-  else if (N==='N1') res='FIGO Stage III';
-  else if (T==='T2a'||T==='T2b') res='FIGO Stage II';
-  else if (T==='T1a'||T==='T1b') res='FIGO Stage I';
-  showResult('vag_result', res, `${T} ${N} ${M}`);
+  let r = M==='M1' ? 'FIGO Stage IVB' : T==='T4' ? 'FIGO Stage IVA'
+    : (T==='T3'&&N==='N0') ? 'FIGO Stage III' : N==='N1' ? 'FIGO Stage III'
+    : (T==='T2a'||T==='T2b') ? 'FIGO Stage II' : (T==='T1a'||T==='T1b') ? 'FIGO Stage I' : '資料不足';
+  showResult('vag_result', r, `${T} ${N} ${M}`);
 }
 
-// ========================= GTN =========================
+// ── GTN ──
 function stageGTN() {
   const T = radioVal('gtn_t');
   const M = radioVal('gtn_m');
-  let stage = '';
-  if (M==='M0') stage = T==='T1' ? 'FIGO Stage I' : 'FIGO Stage II';
-  else if (M==='M1a') stage = 'FIGO Stage III';
-  else stage = 'FIGO Stage IV';
+  let s = M==='M0' ? (T==='T1' ? 'FIGO Stage I' : 'FIGO Stage II') : M==='M1a' ? 'FIGO Stage III' : 'FIGO Stage IV';
   const ids = ['gtn_age','gtn_preg','gtn_interval','gtn_hcg','gtn_size','gtn_site','gtn_num','gtn_chemo'];
-  const score = ids.reduce((s,id) => s + parseInt(document.getElementById(id).value), 0);
+  const score = ids.reduce((acc,id) => acc + parseInt(document.getElementById(id).value), 0);
   const risk = score < 7 ? '低風險 (Low Risk)' : '高風險 (High Risk)';
-  showResult('gtn_result', stage, null);
-  showScore('gtn_score', `⚠️ WHO 風險分數：${score} → ${risk}`);
+  showResult('gtn_result', s, null);
+  showExtra('gtn_score', `⚠️ WHO 風險分數：${score} → ${risk}`, 'result-warning');
 }
 
-// ========================= VULVAR =========================
+// ── VULVAR ──
 function stageVulvar() {
   const T = document.getElementById('vul_t').value;
   const N = document.getElementById('vul_n').value;
   const M = document.getElementById('vul_m').value;
-  const map = {
-    'Tis,N0,M0':'Stage 0', 'T1a,N0,M0':'Stage IA', 'T1b,N0,M0':'Stage IB', 'T2,N0,M0':'Stage II'
-  };
-  const stageIIIA_N = ['N1a','N1b'];
-  const stageIIIB_N = ['N2a','N2b'];
-  let figo = '';
-  if (M==='M1') figo='Stage IVB';
-  else if (T==='T3') figo='Stage IVA';
-  else if (N==='N3') figo='Stage IVA';
-  else if (N==='N2c') figo='Stage IIIC';
-  else if (stageIIIB_N.includes(N)) figo='Stage IIIB';
-  else if (stageIIIA_N.includes(N)) figo='Stage IIIA';
-  else figo = map[`${T},${N},${M}`] || '未知分期';
-  showResult('vul_result', `FIGO ${figo}`, `${T} ${N} ${M}`);
+  let f = '';
+  if (M==='M1') f='Stage IVB';
+  else if (T==='T3'||N==='N3') f='Stage IVA';
+  else if (N==='N2c') f='Stage IIIC';
+  else if (N==='N2a'||N==='N2b') f='Stage IIIB';
+  else if (N==='N1a'||N==='N1b') f='Stage IIIA';
+  else {
+    const m = {'Tis,N0,M0':'Stage 0','T1a,N0,M0':'Stage IA','T1b,N0,M0':'Stage IB','T2,N0,M0':'Stage II'};
+    f = m[`${T},${N},${M}`] || '未知分期';
+  }
+  showResult('vul_result', `FIGO ${f}`, `${T} ${N} ${M}`);
 }
 
-// ========================= AI =========================
+// ── AI ──
 let uploadedFiles = [];
 
 function previewImages(e) {
-  const files = Array.from(e.target.files);
-  uploadedFiles = uploadedFiles.concat(files);
+  uploadedFiles = [...uploadedFiles, ...Array.from(e.target.files)];
   renderPreviews();
 }
-
 function renderPreviews() {
   const grid = document.getElementById('ai_preview');
   grid.innerHTML = '';
@@ -1010,53 +1054,42 @@ function renderPreviews() {
     const url = URL.createObjectURL(f);
     const div = document.createElement('div');
     div.className = 'preview-item';
-    div.innerHTML = `<img src="${url}" alt="preview"><button class="remove-btn" onclick="removeFile(${i})">✕</button>`;
+    div.innerHTML = `<img src="${url}" alt="preview"><button class="rm-btn" onclick="removeFile(${i})">✕</button>`;
     grid.appendChild(div);
   });
 }
-
-function removeFile(i) {
-  uploadedFiles.splice(i, 1);
-  renderPreviews();
-}
+function removeFile(i) { uploadedFiles.splice(i, 1); renderPreviews(); }
 
 async function runAI() {
   const apiKey = document.getElementById('ai_apikey').value.trim();
   const context = document.getElementById('ai_context').value;
-
   if (!apiKey) { alert('請先輸入 Gemini API Key'); return; }
-  if (uploadedFiles.length === 0) { alert('請至少上傳一張報告圖片'); return; }
-
+  if (!uploadedFiles.length) { alert('請至少上傳一張報告圖片'); return; }
   document.getElementById('ai_spinner').className = 'spinner show';
-  document.getElementById('ai_result').className = 'ai-result';
-
+  document.getElementById('ai_result').className = 'ai-result-box';
   try {
     const prompt = `你是一位專業的婦科腫瘤科醫師。目前的癌症類型上下文為：${context}。
 請分析圖片中的病理報告，執行以下任務：
-1. 摘要關鍵發現：提取腫瘤大小 (Tumor size)、侵犯深度 (Invasion depth)、淋巴結狀態 (Lymph node status)、遠端轉移 (Metastasis)、組織學型態 (Histology) 等關鍵資訊。
-2. 判定分期：根據最新 FIGO 與 AJCC TNM 系統進行分期判定，並詳細說明判定理由。
+1. 摘要關鍵發現：提取腫瘤大小、侵犯深度、淋巴結狀態、遠端轉移、組織學型態等關鍵資訊。
+2. 根據最新 FIGO 與 AJCC TNM 系統判定分期，並詳細說明判定理由。
 3. 以 Markdown 表格列出 T、N、M 的判定結果。
-如資訊不足，請說明缺少哪些關鍵資料。
-請用繁體中文回答。`;
-
+若資訊不足，請指出缺少哪些關鍵資料。請用繁體中文回答。`;
     const parts = [{ text: prompt }];
-
     for (const file of uploadedFiles) {
       const b64 = await toBase64(file);
       parts.push({ inline_data: { mime_type: file.type, data: b64 } });
     }
-
-    const payload = { contents: [{ parts }] };
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    const res = await fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ contents: [{ parts }] })
+    });
     const data = await res.json();
-
     document.getElementById('ai_spinner').className = 'spinner';
-
     if (res.ok) {
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '無法解析 AI 回傳內容';
-      document.getElementById('ai_result_body').innerHTML = markdownToHTML(text);
-      document.getElementById('ai_result').className = 'ai-result show';
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '無法解析回傳內容';
+      document.getElementById('ai_result_body').innerHTML = md2html(text);
+      document.getElementById('ai_result').className = 'ai-result-box show';
+      document.getElementById('ai_result').scrollIntoView({ behavior: 'smooth' });
     } else {
       alert(`API 錯誤 (${res.status}): ${data?.error?.message || '未知錯誤'}`);
     }
@@ -1067,28 +1100,32 @@ async function runAI() {
 }
 
 function toBase64(file) {
-  return new Promise((resolve, reject) => {
+  return new Promise((res, rej) => {
     const r = new FileReader();
-    r.onload = () => resolve(r.result.split(',')[1]);
-    r.onerror = reject;
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
     r.readAsDataURL(file);
   });
 }
 
-function markdownToHTML(md) {
+function md2html(md) {
   return md
-    .replace(/^### (.+)$/gm, '<h4 style="color:var(--teal-dark);margin:14px 0 6px;">$1</h4>')
-    .replace(/^## (.+)$/gm, '<h3 style="color:var(--teal);margin:16px 0 8px;">$1</h3>')
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 style="margin-top:12px;">$1</h2>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\|(.+)\|$/gm, (row) => {
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^[-•*] (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/gs, m => `<ul>${m}</ul>`)
+    .replace(/^\|(.+)\|$/gm, row => {
       const cells = row.split('|').filter(c => c.trim() !== '');
-      return '<tr>' + cells.map(c => `<td style="border:1px solid #dde3ea;padding:6px 10px;">${c.trim()}</td>`).join('') + '</tr>';
+      return '<tr>' + cells.map(c => c.trim().match(/^[-:]+$/) ? '' : `<td>${c.trim()}</td>`).join('') + '</tr>';
     })
-    .replace(/(<tr>.*<\/tr>\n?)+/gs, (rows) => `<table style="border-collapse:collapse;width:100%;margin:10px 0;">${rows}</table>`)
-    .replace(/^[-•*] (.+)$/gm, '<li style="margin:3px 0;">$1</li>')
-    .replace(/(<li.*<\/li>\n?)+/gs, (items) => `<ul style="padding-left:20px;margin:8px 0;">${items}</ul>`)
-    .replace(/\n\n/g, '<br><br>')
-    .replace(/\n/g, '<br>');
+    .replace(/(<tr>.*<\/tr>\n?)+/gs, rows => {
+      const cleaned = rows.replace(/<tr><\/tr>\n?/g, '');
+      return `<table>${cleaned}</table>`;
+    })
+    .replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
 }
 </script>
 </body>
